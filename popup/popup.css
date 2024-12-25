@@ -1,0 +1,38 @@
+.container {
+  width: 300px;
+  padding: 15px;
+}
+
+.api-key-section,
+.todo-section {
+  margin-bottom: 20px;
+}
+
+input[type="text"],
+input[type="password"] {
+  width: 200px;
+  padding: 5px;
+  margin-right: 5px;
+}
+
+button {
+  padding: 5px 10px;
+  cursor: pointer;
+}
+
+.todo-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 5px 0;
+}
+
+.delete-btn {
+  color: red;
+  cursor: pointer;
+}
+
+#todoList {
+  list-style: none;
+  padding: 0;
+} 
