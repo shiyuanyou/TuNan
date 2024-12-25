@@ -6,8 +6,9 @@ module.exports = {
   output: {
     filename: 'bundle.js',
     path: path.resolve(__dirname, 'popup/dist'),
+    clean: true
   },
-  mode: 'production',
+  mode: 'development',
   experiments: {
     topLevelAwait: true
   },
@@ -40,7 +41,7 @@ module.exports = {
       process: 'process/browser'
     }),
     new webpack.DefinePlugin({
-      'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV),
+      'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV || 'development'),
       'process.env.DEBUG': JSON.stringify(process.env.DEBUG)
     })
   ]
