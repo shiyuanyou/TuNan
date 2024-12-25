@@ -1,4 +1,4 @@
-import { OpenAI } from 'openai';
+import OpenAI from 'openai';
 
 class GoalAnalyzer {
     constructor() {
@@ -68,7 +68,7 @@ class GoalAnalyzer {
 
         if (!activeKey || !apiKeys[activeKey]) {
             const settingsUrl = chrome.runtime.getURL('options/options.html');
-            alert(`请先设置并选择要使用的 DeepSeek API Key\n\n点击确定打开设置页面`);
+            alert(`请先设置并选择要使用的 DeepSeek API Key\n\n点击确���打开设置页面`);
             chrome.tabs.create({ url: settingsUrl });
             throw new Error('API Key not found');
         }
@@ -85,9 +85,7 @@ class GoalAnalyzer {
             const openai = new OpenAI({
                 baseURL: 'https://api.deepseek.com/v1',
                 apiKey: this.apiKey,
-                defaultHeaders: {
-                    'Content-Type': 'application/json'
-                }
+                dangerouslyAllowBrowser: true
             });
 
             const completion = await openai.chat.completions.create({
@@ -165,7 +163,7 @@ class GoalAnalyzer {
             // 移除加载状态
             document.getElementById('loading')?.remove();
             alert(error.message);
-            throw error; // 让上层错误处理来处理页面状态
+            throw error; // 让上层错误处理来处理���面状态
         }
     }
 
