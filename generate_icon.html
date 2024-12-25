@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+<body>
+<canvas id="iconCanvas" width="128" height="128"></canvas>
+<script>
+const canvas = document.getElementById('iconCanvas');
+const ctx = canvas.getContext('2d');
+
+// 设置背景
+ctx.fillStyle = '#4CAF50';
+ctx.fillRect(0, 0, 128, 128);
+
+// 绘制文字
+ctx.fillStyle = 'white';
+ctx.font = 'bold 80px Arial';
+ctx.textAlign = 'center';
+ctx.textBaseline = 'middle';
+ctx.fillText('T', 64, 64);
+
+// 下载图片
+const link = document.createElement('a');
+link.download = 'icon128.png';
+link.href = canvas.toDataURL();
+link.click();
+</script>
+</body>
+</html> 
