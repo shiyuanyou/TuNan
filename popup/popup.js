@@ -2,6 +2,7 @@ class GoalAnalyzer {
     constructor() {
         this.initializeElements();
         this.addEventListeners();
+        this.loadApiKey();
     }
 
     initializeElements() {
@@ -47,39 +48,141 @@ class GoalAnalyzer {
         }
     }
 
+    async loadApiKey() {
+        const result = await chrome.storage.local.get(['apiKey']);
+        this.apiKey = result.apiKey;
+        if (!this.apiKey) {
+            console.warn('DeepSeek API Key not found');
+        }
+    }
+
+    async callDeepSeek(prompt) {
+        if (!this.apiKey) {
+            throw new Error('请先在设置中配置 DeepSeek API Key');
+        }
+
+        const openai = new OpenAI({
+            baseURL: 'https://api.deepseek.com',
+            apiKey: this.apiKey
+        });
+
+        try {
+            const completion = await openai.chat.completions.create({
+                messages: [
+                    { role: "system", content: "你是一个目标拆解专家，帮助用户分析和拆解他们的目标。" },
+                    { role: "user", content: prompt }
+                ],
+                model: "deepseek-chat",
+            });
+
+            return completion.choices[0].message.content;
+        } catch (error) {
+            console.error('DeepSeek API Error:', error);
+            throw new Error('AI 分析失败: ' + error.message);
+        }
+    }
+
     async analyzeGoal() {
         const goal = this.goalInput.value;
         const motivation = this.motivationInput.value;
         
-        // 这里应该实现与 AI API 的集成
-        // 临时使用模拟数据
-        const tasks = this.generateSampleTasks();
-        
-        this.displayResults(tasks);
-        this.drawCoordinateSystem(tasks);
-    }
+        try {
+            const prompt = `
+用户目标：${goal}
+实现目标的原动力：${motivation}
 
-    generateSampleTasks() {
-        // 生成示例任务数据
-        return {
-            tasks: [
-                "确定旅行预算",
-                "列出感兴趣的城市",
-                // ... 其他任务
-            ],
-            simpleToHard: [/* ... */],
-            impactOrder: [/* ... */]
-        };
+请帮我：
+1. 列出实现这个目标可以做的15项具体事情
+2. 将这15项事情按照从简单到难排序
+3. 将这15项事情按照影响程度从大到小排序
+4. 在坐标系中标注这些事项的位置（X轴是难度，Y轴是影响程度）
+
+请按照以下格式返回：
+{
+    "tasks": [
+        "任务1",
+        "任务2",
+        // ...其他任务
+    ],
+    "simpleToHard": [
+        "最简单的任务",
+        "第二简单的任务",
+        // ...由易到难排序
+    ],
+    "impactOrder": [
+        "影响最大的任务",
+        "影响第二大的任务",
+        // ...按影响程度排序
+    ],
+    "coordinates": [
+        {"task": "任务1", "difficulty": 0.3, "impact": 0.8},
+        {"task": "任务2", "difficulty": 0.5, "impact": 0.6},
+        // ...其他任务的坐标
+    ]
+}`;
+
+            const response = await this.callDeepSeek(prompt);
+            const results = JSON.parse(response);
+            
+            this.displayResults(results);
+            this.drawCoordinateSystem(results.coordinates);
+        } catch (error) {
+            alert(error.message);
+        }
     }
 
     displayResults(results) {
-        // 显示任务列表和排序结果
-        // 实现显示逻辑
+        // 显示15项任务
+        this.taskItems.innerHTML = results.tasks
+            .map((task, index) => `<div class="task-item">${index + 1}. ${task}</div>`)
+            .join('');
+
+        // 显示简单到难的排序
+        this.simpleToDifficult.innerHTML = results.simpleToHard
+            .map((task, index) => `<li>${task}</li>`)
+            .join('');
+
+        // 显示影响程度排序
+        this.impactOrder.innerHTML = results.impactOrder
+            .map((task, index) => `<li>${task}</li>`)
+            .join('');
     }
 
-    drawCoordinateSystem(tasks) {
+    drawCoordinateSystem(coordinates) {
         const ctx = this.canvas.getContext('2d');
-        // 实现坐标轴绘制逻辑
+        const width = this.canvas.width;
+        const height = this.canvas.height;
+        const padding = 40;
+
+        // 清空画布
+        ctx.clearRect(0, 0, width, height);
+
+        // 绘制坐标轴
+        ctx.beginPath();
+        ctx.moveTo(padding, height - padding);
+        ctx.lineTo(width - padding, height - padding); // X轴
+        ctx.moveTo(padding, height - padding);
+        ctx.lineTo(padding, padding); // Y轴
+        ctx.stroke();
+
+        // 添加轴标签
+        ctx.font = '12px Arial';
+        ctx.fillText('难度', width - padding, height - padding/2);
+        ctx.fillText('影响程度', padding/2, padding/2);
+
+        // 绘制数据点
+        coordinates.forEach(({task, difficulty, impact}) => {
+            const x = padding + difficulty * (width - 2 * padding);
+            const y = height - (padding + impact * (height - 2 * padding));
+
+            // 绘制点
+            ctx.beginPath();
+            ctx.arc(x, y, 4, 0, 2 * Math.PI);
+            ctx.fill();
+
+            // 添加任务标签
+            ctx.fillText(task, x + 5, y - 5);
+        });
     }
 }
 
