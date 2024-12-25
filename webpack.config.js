@@ -8,7 +8,11 @@ module.exports = {
     path: path.resolve(__dirname, 'popup/dist'),
   },
   mode: 'production',
+  experiments: {
+    topLevelAwait: true
+  },
   resolve: {
+    extensions: ['.js', '.mjs', '.json'],
     fallback: {
       "path": require.resolve("path-browserify"),
       "os": require.resolve("os-browserify/browser"),
@@ -18,13 +22,18 @@ module.exports = {
       "http": require.resolve("stream-http"),
       "https": require.resolve("https-browserify"),
       "url": require.resolve("url/"),
-      "zlib": require.resolve("browserify-zlib")
+      "zlib": require.resolve("browserify-zlib"),
+      "process": require.resolve("process/browser")
     }
   },
   plugins: [
     new webpack.ProvidePlugin({
       Buffer: ['buffer', 'Buffer'],
       process: 'process/browser'
+    }),
+    new webpack.DefinePlugin({
+      'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV),
+      'process.env.DEBUG': JSON.stringify(process.env.DEBUG)
     })
   ]
 }; 
