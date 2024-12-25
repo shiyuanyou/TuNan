@@ -8,7 +8,6 @@ document.addEventListener('DOMContentLoaded', function() {
   const newTodoInput = document.getElementById('newTodo');
   const addTodoBtn = document.getElementById('addTodo');
   const todoList = document.getElementById('todoList');
-  const openDebugBtn = document.getElementById('openDebug');
 
   // 加载默认 prompt 模板
   chrome.storage.local.get(['promptTemplate'], function(result) {
@@ -19,11 +18,6 @@ document.addEventListener('DOMContentLoaded', function() {
       promptTemplate.value = defaultPrompt;
       chrome.storage.local.set({ promptTemplate: defaultPrompt });
     }
-  });
-
-  // 打开调试面板
-  openDebugBtn.addEventListener('click', function() {
-    window.open(chrome.runtime.getURL('options/options.html'));
   });
 
   // 保存 Prompt 模板
