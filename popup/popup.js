@@ -60,14 +60,18 @@ class GoalAnalyzer {
     }
 
     async loadApiKey() {
-        const result = await chrome.storage.local.get(['apiKey']);
-        this.apiKey = result.apiKey;
-        if (!this.apiKey) {
+        const result = await chrome.storage.local.get(['apiKeys', 'activeKey']);
+        const apiKeys = result.apiKeys || {};
+        const activeKey = result.activeKey;
+
+        if (!activeKey || !apiKeys[activeKey]) {
             const settingsUrl = chrome.runtime.getURL('options/options.html');
-            alert(`请先设置 DeepSeek API Key\n\n点击确定打开设置页面`);
+            alert(`请先设置并选择要使用的 DeepSeek API Key\n\n点击确定打开设置页面`);
             chrome.tabs.create({ url: settingsUrl });
             throw new Error('API Key not found');
         }
+
+        this.apiKey = apiKeys[activeKey];
     }
 
     async callDeepSeek(prompt) {
