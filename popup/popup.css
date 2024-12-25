@@ -35,4 +35,16 @@ button {
 #todoList {
   list-style: none;
   padding: 0;
+}
+
+.ai-analysis {
+  font-size: 0.9em;
+  color: #666;
+  margin-top: 5px;
+  font-style: italic;
+}
+
+.todo-item > div {
+  flex: 1;
+  margin-right: 10px;
 } 

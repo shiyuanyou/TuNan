@@ -1,3 +1,5 @@
+const { OpenAI } = require('openai');
+
 document.addEventListener('DOMContentLoaded', function() {
   // 获取元素
   const apiKeyInput = document.getElementById('apiKey');
@@ -38,19 +40,27 @@ document.addEventListener('DOMContentLoaded', function() {
   function addTodo() {
     const todoText = newTodoInput.value.trim();
     if (todoText) {
-      chrome.storage.local.get(['todos'], function(result) {
-        const todos = result.todos || [];
-        const newTodo = {
-          id: Date.now(),
-          text: todoText,
-          completed: false
-        };
-        todos.push(newTodo);
-        chrome.storage.local.set({ todos: todos }, function() {
-          newTodoInput.value = '';
-          loadTodos();
+      try {
+        // 调用 OpenAI 进行分析
+        const aiAnalysis = await callOpenAI(`分析这个目标: ${todoText}`);
+        
+        chrome.storage.local.get(['todos'], function(result) {
+          const todos = result.todos || [];
+          const newTodo = {
+            id: Date.now(),
+            text: todoText,
+            aiAnalysis: aiAnalysis, // 保存 AI 分析结果
+            completed: false
+          };
+          todos.push(newTodo);
+          chrome.storage.local.set({ todos: todos }, function() {
+            newTodoInput.value = '';
+            loadTodos();
+          });
         });
-      });
+      } catch (error) {
+        alert('AI 分析失败: ' + error.message);
+      }
     }
   }
 
@@ -62,7 +72,10 @@ document.addEventListener('DOMContentLoaded', function() {
         const li = document.createElement('li');
         li.className = 'todo-item';
         li.innerHTML = `
-          <span>${todo.text}</span>
+          <div>
+            <span>${todo.text}</span>
+            ${todo.aiAnalysis ? `<p class="ai-analysis">AI 分析: ${todo.aiAnalysis}</p>` : ''}
+          </div>
           <span class="delete-btn" data-id="${todo.id}">×</span>
         `;
         todoList.appendChild(li);
@@ -89,7 +102,7 @@ document.addEventListener('DOMContentLoaded', function() {
   }
 });
 
-// OpenAI API 调用函数
+// 修改 OpenAI API 调用函数
 async function callOpenAI(prompt) {
   const apiKey = await new Promise(resolve => {
     chrome.storage.local.get(['apiKey'], result => resolve(result.apiKey));
@@ -99,21 +112,22 @@ async function callOpenAI(prompt) {
     throw new Error('请先设置 OpenAI API Key');
   }
 
-  const response = await fetch('https://api.openai.com/v1/chat/completions', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      'Authorization': `Bearer ${apiKey}`
-    },
-    body: JSON.stringify({
+  const openai = new OpenAI({
+    apiKey: apiKey,
+  });
+
+  try {
+    const completion = await openai.chat.completions.create({
       model: "gpt-3.5-turbo",
       messages: [{
         role: "user",
         content: prompt
-      }]
-    })
-  });
+      }],
+    });
 
-  const data = await response.json();
-  return data.choices[0].message.content;
+    return completion.choices[0].message.content;
+  } catch (error) {
+    console.error('OpenAI API 调用错误:', error);
+    throw error;
+  }
 } 

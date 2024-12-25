@@ -4,7 +4,11 @@
   "version": "1.0",
   "description": "A todo list with OpenAI integration",
   "permissions": [
-    "storage"
+    "storage",
+    "scripting"
+  ],
+  "host_permissions": [
+    "https://api.openai.com/*"
   ],
   "action": {
     "default_popup": "popup/popup.html",
