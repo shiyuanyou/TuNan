@@ -2,34 +2,55 @@
 <html>
 <head>
   <meta charset="UTF-8">
-  <title>设置 - TuNan</title>
-  <link rel="stylesheet" href="options.css">
+  <title>设置 DeepSeek API</title>
+  <style>
+    body {
+      padding: 20px;
+    }
+    .container {
+      max-width: 500px;
+      margin: 0 auto;
+    }
+    .form-group {
+      margin-bottom: 15px;
+    }
+    input {
+      width: 100%;
+      padding: 8px;
+      margin-top: 5px;
+    }
+    button {
+      padding: 8px 16px;
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+    .message {
+      margin-top: 10px;
+      padding: 10px;
+      border-radius: 4px;
+    }
+    .success {
+      background-color: #dff0d8;
+      color: #3c763d;
+    }
+    .error {
+      background-color: #f2dede;
+      color: #a94442;
+    }
+  </style>
 </head>
 <body>
   <div class="container">
-    <h2>TuNan 设置</h2>
-    
-    <div class="debug-section">
-      <h3>API Keys 管理</h3>
-      <div class="add-key">
-        <input type="text" id="keyName" placeholder="API Key 名称">
-        <input type="password" id="apiKey" placeholder="输入 DeepSeek API Key">
-        <button id="saveKey">保存</button>
-      </div>
-      <ul id="savedKeys"></ul>
+    <h1>DeepSeek API 设置</h1>
+    <div class="form-group">
+      <label for="apiKey">API Key</label>
+      <input type="password" id="apiKey" placeholder="输入你的 DeepSeek API Key">
     </div>
-
-    <div class="debug-section">
-      <h3>Prompt 模板设置</h3>
-      <textarea id="promptTemplate" rows="6" placeholder="输入 Prompt 模板"></textarea>
-      <button id="savePrompt">保存 Prompt</button>
-    </div>
-
-    <div class="debug-section">
-      <h3>调试日志</h3>
-      <button id="clearLog">清除日志</button>
-      <div id="debugLog" class="debug-log"></div>
-    </div>
+    <button id="save">保存</button>
+    <div id="message" class="message" style="display: none;"></div>
   </div>
   <script src="options.js"></script>
 </body>

@@ -24,6 +24,13 @@ class GoalAnalyzer {
         this.simpleToDifficult = document.getElementById('simpleToDifficult');
         this.impactOrder = document.getElementById('impactOrder');
         this.canvas = document.getElementById('taskCanvas');
+        
+        // 添加设置链接
+        this.settingsLink = document.getElementById('settingsLink');
+        this.settingsLink.addEventListener('click', () => {
+            const settingsUrl = chrome.runtime.getURL('options/options.html');
+            chrome.tabs.create({ url: settingsUrl });
+        });
     }
 
     addEventListeners() {
@@ -40,11 +47,15 @@ class GoalAnalyzer {
 
     async handleMotivationSubmit() {
         if (this.motivationInput.value.trim()) {
-            this.step2.classList.remove('active');
-            this.step3.classList.add('active');
-            
-            // 这里应该调用 AI API 来获取分析结果
-            await this.analyzeGoal();
+            try {
+                this.step2.classList.remove('active');
+                this.step3.classList.add('active');
+                await this.analyzeGoal();
+            } catch (error) {
+                this.step2.classList.add('active');
+                this.step3.classList.remove('active');
+                console.error('Analysis failed:', error);
+            }
         }
     }
 
@@ -52,7 +63,10 @@ class GoalAnalyzer {
         const result = await chrome.storage.local.get(['apiKey']);
         this.apiKey = result.apiKey;
         if (!this.apiKey) {
-            console.warn('DeepSeek API Key not found');
+            const settingsUrl = chrome.runtime.getURL('options/options.html');
+            alert(`请先设置 DeepSeek API Key\n\n点击确定打开设置页面`);
+            chrome.tabs.create({ url: settingsUrl });
+            throw new Error('API Key not found');
         }
     }
 
