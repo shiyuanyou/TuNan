@@ -1,0 +1,97 @@
+body {
+  margin: 0;
+  padding: 20px;
+  font-family: Arial, sans-serif;
+}
+
+.container {
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.debug-section {
+  margin-bottom: 30px;
+  padding: 20px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+h2 {
+  margin-bottom: 20px;
+  color: #333;
+}
+
+h3 {
+  margin-top: 0;
+  color: #666;
+}
+
+.add-key {
+  margin-bottom: 15px;
+}
+
+input[type="text"],
+input[type="password"] {
+  padding: 8px;
+  margin-right: 10px;
+  width: 200px;
+}
+
+button {
+  padding: 8px 15px;
+  cursor: pointer;
+  background: #4CAF50;
+  border: none;
+  color: white;
+  border-radius: 4px;
+}
+
+button:hover {
+  background: #45a049;
+}
+
+#promptTemplate {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 10px;
+  box-sizing: border-box;
+}
+
+.debug-log {
+  background: #f5f5f5;
+  padding: 15px;
+  max-height: 300px;
+  overflow-y: auto;
+  font-family: monospace;
+  font-size: 14px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+#savedKeys {
+  list-style: none;
+  padding: 0;
+}
+
+#savedKeys li {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px;
+  border-bottom: 1px solid #eee;
+}
+
+#savedKeys button {
+  margin-left: 10px;
+  padding: 5px 10px;
+  font-size: 12px;
+}
+
+#clearLog {
+  margin-bottom: 10px;
+  background: #f44336;
+}
+
+#clearLog:hover {
+  background: #da190b;
+} 

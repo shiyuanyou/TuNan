@@ -11,24 +11,7 @@
       <input type="text" id="keyName" placeholder="API Key 名称">
       <input type="password" id="apiKey" placeholder="输入您的 DeepSeek API Key">
       <button id="saveKey">保存</button>
-      <button id="toggleDebug">调试面板</button>
-    </div>
-    
-    <div id="debugPanel" class="debug-panel" style="display: none;">
-      <h3>调试面板</h3>
-      <div class="debug-section">
-        <h4>已保存的 API Keys</h4>
-        <ul id="savedKeys"></ul>
-      </div>
-      <div class="debug-section">
-        <h4>Prompt 设置</h4>
-        <textarea id="promptTemplate" rows="4" placeholder="输入 Prompt 模板"></textarea>
-        <button id="savePrompt">保存 Prompt</button>
-      </div>
-      <div class="debug-section">
-        <h4>调试日志</h4>
-        <div id="debugLog" class="debug-log"></div>
-      </div>
+      <button id="openDebug">打开调试面板</button>
     </div>
     
     <div class="todo-section">

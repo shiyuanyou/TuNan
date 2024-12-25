@@ -8,12 +8,7 @@ document.addEventListener('DOMContentLoaded', function() {
   const newTodoInput = document.getElementById('newTodo');
   const addTodoBtn = document.getElementById('addTodo');
   const todoList = document.getElementById('todoList');
-  const toggleDebugBtn = document.getElementById('toggleDebug');
-  const debugPanel = document.getElementById('debugPanel');
-  const promptTemplate = document.getElementById('promptTemplate');
-  const savePromptBtn = document.getElementById('savePrompt');
-  const debugLog = document.getElementById('debugLog');
-  const savedKeysList = document.getElementById('savedKeys');
+  const openDebugBtn = document.getElementById('openDebug');
 
   // 加载默认 prompt 模板
   chrome.storage.local.get(['promptTemplate'], function(result) {
@@ -26,12 +21,9 @@ document.addEventListener('DOMContentLoaded', function() {
     }
   });
 
-  // 切换调试面板
-  toggleDebugBtn.addEventListener('click', function() {
-    debugPanel.style.display = debugPanel.style.display === 'none' ? 'block' : 'none';
-    if (debugPanel.style.display === 'block') {
-      loadSavedKeys();
-    }
+  // 打开调试面板
+  openDebugBtn.addEventListener('click', function() {
+    chrome.runtime.openOptionsPage();
   });
 
   // 保存 Prompt 模板
