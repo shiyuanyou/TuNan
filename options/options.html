@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>设置 - TuNan</title>
+  <link rel="stylesheet" href="options.css">
+</head>
+<body>
+  <div class="container">
+    <h2>TuNan 设置</h2>
+    
+    <div class="debug-section">
+      <h3>API Keys 管理</h3>
+      <div class="add-key">
+        <input type="text" id="keyName" placeholder="API Key 名称">
+        <input type="password" id="apiKey" placeholder="输入 DeepSeek API Key">
+        <button id="saveKey">保存</button>
+      </div>
+      <ul id="savedKeys"></ul>
+    </div>
+
+    <div class="debug-section">
+      <h3>Prompt 模板设置</h3>
+      <textarea id="promptTemplate" rows="6" placeholder="输入 Prompt 模板"></textarea>
+      <button id="savePrompt">保存 Prompt</button>
+    </div>
+
+    <div class="debug-section">
+      <h3>调试日志</h3>
+      <button id="clearLog">清除日志</button>
+      <div id="debugLog" class="debug-log"></div>
+    </div>
+  </div>
+  <script src="options.js"></script>
+</body>
+</html> 

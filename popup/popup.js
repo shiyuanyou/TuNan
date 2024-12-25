@@ -23,7 +23,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
   // 打开调试面板
   openDebugBtn.addEventListener('click', function() {
-    chrome.runtime.openOptionsPage();
+    window.open(chrome.runtime.getURL('options/options.html'));
   });
 
   // 保存 Prompt 模板

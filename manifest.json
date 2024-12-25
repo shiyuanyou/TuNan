@@ -5,7 +5,8 @@
   "description": "A todo list with DeepSeek AI integration",
   "permissions": [
     "storage",
-    "scripting"
+    "scripting",
+    "tabs"
   ],
   "host_permissions": [
     "https://api.deepseek.com/*"
@@ -13,5 +14,5 @@
   "action": {
     "default_popup": "popup/popup.html"
   },
-  "options_page": "debug/debug.html"
+  "options_page": "options/options.html"
 } 
