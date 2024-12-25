@@ -1,3 +1,5 @@
+import { OpenAI } from 'openai';
+
 class GoalAnalyzer {
     constructor() {
         this.initializeElements();
@@ -79,24 +81,33 @@ class GoalAnalyzer {
             throw new Error('请先在设置中配置 DeepSeek API Key');
         }
 
-        const openai = new OpenAI({
-            baseURL: 'https://api.deepseek.com',
-            apiKey: this.apiKey
-        });
-
         try {
+            const openai = new OpenAI({
+                baseURL: 'https://api.deepseek.com/v1',
+                apiKey: this.apiKey,
+                defaultHeaders: {
+                    'Content-Type': 'application/json'
+                }
+            });
+
             const completion = await openai.chat.completions.create({
                 messages: [
                     { role: "system", content: "你是一个目标拆解专家，帮助用户分析和拆解他们的目标。" },
                     { role: "user", content: prompt }
                 ],
                 model: "deepseek-chat",
+                temperature: 0.7,
+                max_tokens: 2000
             });
 
             return completion.choices[0].message.content;
         } catch (error) {
             console.error('DeepSeek API Error:', error);
-            throw new Error('AI 分析失败: ' + error.message);
+            if (error.response) {
+                throw new Error(`AI 分析失败: ${error.response.data.error.message}`);
+            } else {
+                throw new Error('AI 分析失败: ' + error.message);
+            }
         }
     }
 
@@ -105,12 +116,15 @@ class GoalAnalyzer {
         const motivation = this.motivationInput.value;
         
         try {
+            // 显示加载状态
+            this.step3.innerHTML += '<div id="loading">分析中...</div>';
+            
             const prompt = `
 用户目标：${goal}
 实现目标的原动力：${motivation}
 
 请帮我：
-1. 列出实现这个目标可以做的15项具体事情
+1. 出实现这个目标可以做的15项具体事情
 2. 将这15项事情按照从简单到难排序
 3. 将这15项事情按照影响程度从大到小排序
 4. 在坐标系中标注这些事项的位置（X轴是难度，Y轴是影响程度）
@@ -140,12 +154,18 @@ class GoalAnalyzer {
 }`;
 
             const response = await this.callDeepSeek(prompt);
-            const results = JSON.parse(response);
             
+            // 移除加载状态
+            document.getElementById('loading')?.remove();
+            
+            const results = JSON.parse(response);
             this.displayResults(results);
             this.drawCoordinateSystem(results.coordinates);
         } catch (error) {
+            // 移除加载状态
+            document.getElementById('loading')?.remove();
             alert(error.message);
+            throw error; // 让上层错误处理来处理页面状态
         }
     }
 

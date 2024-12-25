@@ -14,12 +14,17 @@ module.exports = {
       "os": require.resolve("os-browserify/browser"),
       "crypto": require.resolve("crypto-browserify"),
       "stream": require.resolve("stream-browserify"),
-      "buffer": require.resolve("buffer/")
+      "buffer": require.resolve("buffer/"),
+      "http": require.resolve("stream-http"),
+      "https": require.resolve("https-browserify"),
+      "url": require.resolve("url/"),
+      "zlib": require.resolve("browserify-zlib")
     }
   },
   plugins: [
     new webpack.ProvidePlugin({
       Buffer: ['buffer', 'Buffer'],
+      process: 'process/browser'
     })
   ]
 }; 
