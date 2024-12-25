@@ -1,4 +1,4 @@
-const { OpenAI } = require('openai');
+const OpenAI = require('openai');
 
 document.addEventListener('DOMContentLoaded', function() {
   // 获取元素
@@ -27,29 +27,29 @@ document.addEventListener('DOMContentLoaded', function() {
   });
 
   // 添加新待办事项
-  addTodoBtn.addEventListener('click', function() {
-    addTodo();
+  addTodoBtn.addEventListener('click', async function() {
+    await addTodo();
   });
 
-  newTodoInput.addEventListener('keypress', function(e) {
+  newTodoInput.addEventListener('keypress', async function(e) {
     if (e.key === 'Enter') {
-      addTodo();
+      await addTodo();
     }
   });
 
-  function addTodo() {
+  async function addTodo() {
     const todoText = newTodoInput.value.trim();
     if (todoText) {
       try {
-        // 调用 OpenAI 进行分析
-        const aiAnalysis = await callOpenAI(`分析这个目标: ${todoText}`);
+        // 调用 DeepSeek 进行分析
+        const aiAnalysis = await callDeepSeek(`分析这个目标: ${todoText}`);
         
         chrome.storage.local.get(['todos'], function(result) {
           const todos = result.todos || [];
           const newTodo = {
             id: Date.now(),
             text: todoText,
-            aiAnalysis: aiAnalysis, // 保存 AI 分析结果
+            aiAnalysis: aiAnalysis,
             completed: false
           };
           todos.push(newTodo);
@@ -102,32 +102,33 @@ document.addEventListener('DOMContentLoaded', function() {
   }
 });
 
-// 修改 OpenAI API 调用函数
-async function callOpenAI(prompt) {
+// DeepSeek API 调用函数
+async function callDeepSeek(prompt) {
   const apiKey = await new Promise(resolve => {
     chrome.storage.local.get(['apiKey'], result => resolve(result.apiKey));
   });
 
   if (!apiKey) {
-    throw new Error('请先设置 OpenAI API Key');
+    throw new Error('请先设置 DeepSeek API Key');
   }
 
   const openai = new OpenAI({
-    apiKey: apiKey,
+    baseURL: 'https://api.deepseek.com',
+    apiKey: apiKey
   });
 
   try {
     const completion = await openai.chat.completions.create({
-      model: "gpt-3.5-turbo",
-      messages: [{
-        role: "user",
-        content: prompt
-      }],
+      messages: [
+        { role: "system", content: "You are a helpful assistant." },
+        { role: "user", content: prompt }
+      ],
+      model: "deepseek-chat",
     });
 
     return completion.choices[0].message.content;
   } catch (error) {
-    console.error('OpenAI API 调用错误:', error);
+    console.error('DeepSeek API 调用错误:', error);
     throw error;
   }
 } 
