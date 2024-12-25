@@ -1,5 +1,20 @@
 {
   "scripts": {
     "build": "webpack"
+  },
+  "name": "tunan",
+  "version": "1.0.0",
+  "description": "## 目录",
+  "main": "webpack.config.js",
+  "directories": {
+    "doc": "doc"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "openai": "^4.77.0",
+    "webpack": "^5.97.1",
+    "webpack-cli": "^6.0.1"
   }
-} 
+}

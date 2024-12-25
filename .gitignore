@@ -1,0 +1,38 @@
+# Node.js
+node_modules/
+dist/
+
+# Build output
+popup/dist/
+*.bundle.js
+
+# IDE and editor files
+.idea/
+.vscode/
+*.swp
+*.swo
+.DS_Store
+
+# Environment variables
+.env
+.env.local
+.env.*.local
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+logs/
+*.log
+
+# Browser extension packaging
+*.zip
+*.crx
+*.pem
+
+# Testing
+coverage/
+
+# Temporary files
+.tmp/
+.temp/ 
