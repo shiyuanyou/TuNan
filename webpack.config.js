@@ -26,6 +26,14 @@ module.exports = {
       "process": require.resolve("process/browser")
     }
   },
+  module: {
+    rules: [
+      {
+        test: /\.pem$/,
+        exclude: /node_modules\/public-encrypt\/test/
+      }
+    ]
+  },
   plugins: [
     new webpack.ProvidePlugin({
       Buffer: ['buffer', 'Buffer'],
