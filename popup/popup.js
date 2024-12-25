@@ -1,244 +1,89 @@
-const OpenAI = require('openai');
-
-document.addEventListener('DOMContentLoaded', function() {
-  // 获取元素
-  const apiKeyInput = document.getElementById('apiKey');
-  const keyNameInput = document.getElementById('keyName');
-  const saveKeyBtn = document.getElementById('saveKey');
-  const newTodoInput = document.getElementById('newTodo');
-  const addTodoBtn = document.getElementById('addTodo');
-  const todoList = document.getElementById('todoList');
-
-  // 加载默认 prompt 模板
-  chrome.storage.local.get(['promptTemplate'], function(result) {
-    if (result.promptTemplate) {
-      promptTemplate.value = result.promptTemplate;
-    } else {
-      const defaultPrompt = `分析这个目标: {goal}\n请提供：\n1. 目标可行性分析\n2. 实现步骤建议\n3. 潜在风险提示`;
-      promptTemplate.value = defaultPrompt;
-      chrome.storage.local.set({ promptTemplate: defaultPrompt });
+class GoalAnalyzer {
+    constructor() {
+        this.initializeElements();
+        this.addEventListeners();
     }
-  });
 
-  // 保存 Prompt 模板
-  savePromptBtn.addEventListener('click', function() {
-    const template = promptTemplate.value;
-    chrome.storage.local.set({ promptTemplate: template }, function() {
-      logDebug('Prompt 模板已保存');
-    });
-  });
-
-  // 加载已保存的 API Keys
-  function loadSavedKeys() {
-    chrome.storage.local.get(['apiKeys'], function(result) {
-      const keys = result.apiKeys || {};
-      savedKeysList.innerHTML = '';
-      Object.entries(keys).forEach(([name, key]) => {
-        const li = document.createElement('li');
-        li.innerHTML = `
-          <span>${name}</span>
-          <div>
-            <button class="use-key" data-name="${name}">使用</button>
-            <button class="delete-key" data-name="${name}">删除</button>
-          </div>
-        `;
-        savedKeysList.appendChild(li);
-      });
-      
-      // 添加事件监听
-      document.querySelectorAll('.use-key').forEach(btn => {
-        btn.addEventListener('click', function() {
-          const name = this.getAttribute('data-name');
-          useApiKey(name);
-        });
-      });
-      
-      document.querySelectorAll('.delete-key').forEach(btn => {
-        btn.addEventListener('click', function() {
-          const name = this.getAttribute('data-name');
-          deleteApiKey(name);
-        });
-      });
-    });
-  }
-
-  // 使用选中的 API Key
-  function useApiKey(name) {
-    chrome.storage.local.get(['apiKeys'], function(result) {
-      const keys = result.apiKeys || {};
-      if (keys[name]) {
-        keyNameInput.value = name;
-        apiKeyInput.value = keys[name];
-        logDebug(`已选择 API Key: ${name}`);
-      }
-    });
-  }
-
-  // 删除 API Key
-  function deleteApiKey(name) {
-    chrome.storage.local.get(['apiKeys'], function(result) {
-      const keys = result.apiKeys || {};
-      delete keys[name];
-      chrome.storage.local.set({ apiKeys: keys }, function() {
-        loadSavedKeys();
-        logDebug(`已删除 API Key: ${name}`);
-      });
-    });
-  }
-
-  // 调试日志函数
-  function logDebug(message) {
-    const time = new Date().toLocaleTimeString();
-    const logEntry = document.createElement('div');
-    logEntry.textContent = `[${time}] ${message}`;
-    debugLog.appendChild(logEntry);
-    debugLog.scrollTop = debugLog.scrollHeight;
-  }
-
-  // 加载保存的 API Key
-  chrome.storage.local.get(['apiKey'], function(result) {
-    if (result.apiKey) {
-      apiKeyInput.value = result.apiKey;
-    }
-  });
-
-  // 加载保存的待办事项
-  loadTodos();
-
-  // 修改保存 API Key 的逻辑
-  saveKeyBtn.addEventListener('click', function() {
-    const keyName = keyNameInput.value.trim();
-    const apiKey = apiKeyInput.value;
-    
-    if (!keyName) {
-      alert('请输入 API Key 名称');
-      return;
-    }
-    
-    chrome.storage.local.get(['apiKeys'], function(result) {
-      const keys = result.apiKeys || {};
-      keys[keyName] = apiKey;
-      chrome.storage.local.set({ apiKeys: keys }, function() {
-        alert('API Key 已保存！');
-        loadSavedKeys();
-        logDebug(`已保存 API Key: ${keyName}`);
-      });
-    });
-  });
-
-  // 添加新待办事项
-  addTodoBtn.addEventListener('click', async function() {
-    await addTodo();
-  });
-
-  newTodoInput.addEventListener('keypress', async function(e) {
-    if (e.key === 'Enter') {
-      await addTodo();
-    }
-  });
-
-  async function addTodo() {
-    const todoText = newTodoInput.value.trim();
-    if (todoText) {
-      try {
-        // 调用 DeepSeek 进行分析
-        const aiAnalysis = await callDeepSeek(todoText);
+    initializeElements() {
+        // 步骤元素
+        this.step1 = document.getElementById('step1');
+        this.step2 = document.getElementById('step2');
+        this.step3 = document.getElementById('step3');
         
-        chrome.storage.local.get(['todos'], function(result) {
-          const todos = result.todos || [];
-          const newTodo = {
-            id: Date.now(),
-            text: todoText,
-            aiAnalysis: aiAnalysis,
-            completed: false
-          };
-          todos.push(newTodo);
-          chrome.storage.local.set({ todos: todos }, function() {
-            newTodoInput.value = '';
-            loadTodos();
-          });
-        });
-      } catch (error) {
-        alert('AI 分析失败: ' + error.message);
-      }
+        // 按钮
+        this.submitGoalBtn = document.getElementById('submitGoal');
+        this.submitMotivationBtn = document.getElementById('submitMotivation');
+        
+        // 输入框
+        this.goalInput = document.getElementById('goalInput');
+        this.motivationInput = document.getElementById('motivationInput');
+        
+        // 结果展示区域
+        this.taskItems = document.getElementById('taskItems');
+        this.simpleToDifficult = document.getElementById('simpleToDifficult');
+        this.impactOrder = document.getElementById('impactOrder');
+        this.canvas = document.getElementById('taskCanvas');
     }
-  }
 
-  function loadTodos() {
-    chrome.storage.local.get(['todos'], function(result) {
-      const todos = result.todos || [];
-      todoList.innerHTML = '';
-      todos.forEach(function(todo) {
-        const li = document.createElement('li');
-        li.className = 'todo-item';
-        li.innerHTML = `
-          <div>
-            <span>${todo.text}</span>
-            ${todo.aiAnalysis ? `<p class="ai-analysis">AI 分析: ${todo.aiAnalysis}</p>` : ''}
-          </div>
-          <span class="delete-btn" data-id="${todo.id}">×</span>
-        `;
-        todoList.appendChild(li);
-      });
+    addEventListeners() {
+        this.submitGoalBtn.addEventListener('click', () => this.handleGoalSubmit());
+        this.submitMotivationBtn.addEventListener('click', () => this.handleMotivationSubmit());
+    }
 
-      // 添加删除事件监听
-      document.querySelectorAll('.delete-btn').forEach(btn => {
-        btn.addEventListener('click', function() {
-          const todoId = parseInt(this.getAttribute('data-id'));
-          deleteTodo(todoId);
-        });
-      });
-    });
-  }
+    handleGoalSubmit() {
+        if (this.goalInput.value.trim()) {
+            this.step1.classList.remove('active');
+            this.step2.classList.add('active');
+        }
+    }
 
-  function deleteTodo(todoId) {
-    chrome.storage.local.get(['todos'], function(result) {
-      const todos = result.todos || [];
-      const newTodos = todos.filter(todo => todo.id !== todoId);
-      chrome.storage.local.set({ todos: newTodos }, function() {
-        loadTodos();
-      });
-    });
-  }
-});
+    async handleMotivationSubmit() {
+        if (this.motivationInput.value.trim()) {
+            this.step2.classList.remove('active');
+            this.step3.classList.add('active');
+            
+            // 这里应该调用 AI API 来获取分析结果
+            await this.analyzeGoal();
+        }
+    }
 
-// DeepSeek API 调用函数
-async function callDeepSeek(todoText) {
-  const template = await new Promise(resolve => {
-    chrome.storage.local.get(['promptTemplate'], result => 
-      resolve(result.promptTemplate || '分析这个目标: {goal}')
-    );
-  });
+    async analyzeGoal() {
+        const goal = this.goalInput.value;
+        const motivation = this.motivationInput.value;
+        
+        // 这里应该实现与 AI API 的集成
+        // 临时使用模拟数据
+        const tasks = this.generateSampleTasks();
+        
+        this.displayResults(tasks);
+        this.drawCoordinateSystem(tasks);
+    }
 
-  const prompt = template.replace('{goal}', todoText);
-  logDebug(`发送请求: ${prompt}`);
-  
-  const apiKey = await new Promise(resolve => {
-    chrome.storage.local.get(['apiKey'], result => resolve(result.apiKey));
-  });
+    generateSampleTasks() {
+        // 生成示例任务数据
+        return {
+            tasks: [
+                "确定旅行预算",
+                "列出感兴趣的城市",
+                // ... 其他任务
+            ],
+            simpleToHard: [/* ... */],
+            impactOrder: [/* ... */]
+        };
+    }
 
-  if (!apiKey) {
-    throw new Error('请先设置 DeepSeek API Key');
-  }
+    displayResults(results) {
+        // 显示任务列表和排序结果
+        // 实现显示逻辑
+    }
 
-  const openai = new OpenAI({
-    baseURL: 'https://api.deepseek.com',
-    apiKey: apiKey
-  });
+    drawCoordinateSystem(tasks) {
+        const ctx = this.canvas.getContext('2d');
+        // 实现坐标轴绘制逻辑
+    }
+}
 
-  try {
-    const completion = await openai.chat.completions.create({
-      messages: [
-        { role: "system", content: "You are a helpful assistant." },
-        { role: "user", content: prompt }
-      ],
-      model: "deepseek-chat",
-    });
-
-    logDebug('收到响应');
-    return completion.choices[0].message.content;
-  } catch (error) {
-    logDebug(`错误: ${error.message}`);
-    throw error;
-  }
-} 
+// 初始化应用
+document.addEventListener('DOMContentLoaded', () => {
+    new GoalAnalyzer();
+}); 

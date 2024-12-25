@@ -6,22 +6,42 @@
 </head>
 <body>
   <div class="container">
-    <div class="api-key-section">
-      <h3>DeepSeek API Key</h3>
-      <input type="text" id="keyName" placeholder="API Key 名称">
-      <input type="password" id="apiKey" placeholder="输入您的 DeepSeek API Key">
-      <button id="saveKey">保存</button>
+    <div id="step1" class="step active">
+      <h2>输入你的目标</h2>
+      <textarea id="goalInput" placeholder="请输入你要实现的目标..."></textarea>
+      <button id="submitGoal">下一步</button>
     </div>
-    
-    <div class="todo-section">
-      <h3>目标列表</h3>
-      <div class="add-todo">
-        <input type="text" id="newTodo" placeholder="添加新目标">
-        <button id="addTodo">添加</button>
+
+    <div id="step2" class="step">
+      <h2>你的原动力是什么？</h2>
+      <textarea id="motivationInput" placeholder="请描述你实现这个目标的真实原因..."></textarea>
+      <button id="submitMotivation">生成分析</button>
+    </div>
+
+    <div id="step3" class="step">
+      <h2>目标分析结果</h2>
+      <div id="taskList">
+        <h3>15项行动步骤</h3>
+        <div id="taskItems"></div>
       </div>
-      <ul id="todoList"></ul>
+      
+      <div id="sortedLists">
+        <div class="sortedList">
+          <h3>从简单到难排序</h3>
+          <ol id="simpleToDifficult"></ol>
+        </div>
+        <div class="sortedList">
+          <h3>从影响程度排序</h3>
+          <ol id="impactOrder"></ol>
+        </div>
+      </div>
+
+      <div id="coordinateSystem">
+        <h3>坐标轴分析</h3>
+        <canvas id="taskCanvas"></canvas>
+      </div>
     </div>
   </div>
-  <script src="dist/bundle.js"></script>
+  <script src="popup.js"></script>
 </body>
 </html> 

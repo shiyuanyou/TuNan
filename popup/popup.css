@@ -1,103 +1,48 @@
 .container {
-  width: 300px;
-  padding: 15px;
+  width: 500px;
+  padding: 20px;
 }
 
-.api-key-section,
-.todo-section {
-  margin-bottom: 20px;
+.step {
+  display: none;
 }
 
-input[type="text"],
-input[type="password"] {
-  width: 200px;
-  padding: 5px;
-  margin-right: 5px;
+.step.active {
+  display: block;
+}
+
+textarea {
+  width: 100%;
+  min-height: 100px;
+  margin: 10px 0;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
 }
 
 button {
-  padding: 5px 10px;
+  padding: 8px 16px;
+  background-color: #4CAF50;
+  color: white;
+  border: none;
+  border-radius: 4px;
   cursor: pointer;
 }
 
-.todo-item {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 5px 0;
+button:hover {
+  background-color: #45a049;
 }
 
-.delete-btn {
-  color: red;
-  cursor: pointer;
+#taskList, #sortedLists, #coordinateSystem {
+  margin-top: 20px;
 }
 
-#todoList {
-  list-style: none;
-  padding: 0;
+.sortedList {
+  margin-bottom: 20px;
 }
 
-.ai-analysis {
-  font-size: 0.9em;
-  color: #666;
-  margin-top: 5px;
-  font-style: italic;
-}
-
-.todo-item > div {
-  flex: 1;
-  margin-right: 10px;
-}
-
-/* 调试面板样式 */
-.debug-panel {
-  border-top: 1px solid #ccc;
-  margin-top: 15px;
-  padding-top: 15px;
-}
-
-.debug-section {
-  margin-bottom: 15px;
-}
-
-.debug-section h4 {
-  margin: 10px 0;
-  color: #666;
-}
-
-#promptTemplate {
+#taskCanvas {
   width: 100%;
-  margin-bottom: 10px;
-  padding: 5px;
-}
-
-.debug-log {
-  background: #f5f5f5;
-  padding: 10px;
-  max-height: 150px;
-  overflow-y: auto;
-  font-family: monospace;
-  font-size: 12px;
-}
-
-#savedKeys {
-  list-style: none;
-  padding: 0;
-}
-
-#savedKeys li {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 5px 0;
-  border-bottom: 1px solid #eee;
-}
-
-#savedKeys button {
-  font-size: 12px;
-  padding: 2px 5px;
-}
-
-#keyName {
-  margin-bottom: 5px;
+  height: 400px;
+  border: 1px solid #ccc;
 } 
