@@ -2,18 +2,14 @@ const path = require('path');
 const webpack = require('webpack');
 
 module.exports = {
-  entry: './popup/popup.js',
+  entry: './src/popup/popup.js',
   output: {
     filename: 'bundle.js',
-    path: path.resolve(__dirname, 'popup/dist'),
+    path: path.resolve(__dirname, 'dist'),
     clean: true
   },
   mode: 'development',
-  experiments: {
-    topLevelAwait: true
-  },
   resolve: {
-    extensions: ['.js', '.mjs', '.json'],
     fallback: {
       "path": require.resolve("path-browserify"),
       "os": require.resolve("os-browserify/browser"),
@@ -27,22 +23,10 @@ module.exports = {
       "process": require.resolve("process/browser")
     }
   },
-  module: {
-    rules: [
-      {
-        test: /\.pem$/,
-        exclude: /node_modules\/public-encrypt\/test/
-      }
-    ]
-  },
   plugins: [
     new webpack.ProvidePlugin({
       Buffer: ['buffer', 'Buffer'],
       process: 'process/browser'
-    }),
-    new webpack.DefinePlugin({
-      'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV || 'development'),
-      'process.env.DEBUG': JSON.stringify(process.env.DEBUG)
     })
   ]
 }; 
