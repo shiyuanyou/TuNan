@@ -1,6 +1,6 @@
 {
   "name": "tunan",
-  "version": "1.0.0",
+  "version": "0.1.0",
   "description": "TuNan - Vue 3 + Electron application",
   "main": "src/main/main.js",
   "scripts": {

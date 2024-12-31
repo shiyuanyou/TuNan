@@ -7,6 +7,9 @@
   - [介绍](#介绍)
   - [prompt分享](#prompt分享)
   - [install \& run \& build](#install--run--build)
+    - [安装依赖](#安装依赖)
+    - [运行](#运行)
+    - [打包](#打包)
 
 ## 介绍
 
@@ -31,8 +34,20 @@
 
 ## install & run & build
 
+### 安装依赖
+
 ```bash
 npm install
+```
+
+### 运行
+
+```bash
 npm run dev
+```
+
+### 打包
+
+```bash
 npm run build:win
 ```
