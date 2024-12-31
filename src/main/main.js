@@ -11,11 +11,13 @@ function createWindow() {
     }
   })
 
-  // 开发环境下连接 Vite 开发服务器
-  win.loadURL('http://localhost:5173')
-  
-  // 打开开发工具以便调试
-  win.webContents.openDevTools()
+  // 根据环境加载不同的URL
+  if (process.env.NODE_ENV === 'development') {
+    win.loadURL('http://localhost:5173')
+    win.webContents.openDevTools()
+  } else {
+    win.loadFile(path.join(__dirname, '../../dist/index.html'))
+  }
 }
 
 app.whenReady().then(() => {
