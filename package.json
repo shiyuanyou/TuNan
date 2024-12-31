@@ -1,0 +1,25 @@
+{
+  "name": "TuNan",
+  "version": "1.0.0",
+  "description": "TuNan - Vue 3 + Electron application",
+  "main": "src/main/main.js",
+  "scripts": {
+    "dev": "concurrently \"vite\" \"electron .\"",
+    "build": "vite build",
+    "start": "electron ."
+  },
+  "keywords": ["vue", "electron", "desktop", "TuNan"],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "vue": "^3.3.10",
+    "electron": "latest"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-vue": "^4.5.0",
+    "concurrently": "^8.2.0",
+    "electron-builder": "^24.6.0",
+    "vite": "^5.0.0",
+    "wait-on": "^7.2.0"
+  }
+}
