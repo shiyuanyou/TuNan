@@ -4,7 +4,7 @@
   "description": "TuNan - Vue 3 + Electron application",
   "main": "src/main/main.js",
   "scripts": {
-    "dev": "concurrently \"vite\" \"electron .\"",
+    "dev": "concurrently \"vite\" \"wait-on tcp:5173 && electron .\"",
     "build": "vite build",
     "start": "electron .",
     "build:win": "npm run build && electron-builder --win",
