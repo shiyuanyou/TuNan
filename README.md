@@ -6,6 +6,7 @@
   - [目录](#目录)
   - [介绍](#介绍)
   - [prompt分享](#prompt分享)
+  - [install \& run \& build](#install--run--build)
 
 ## 介绍
 
@@ -27,3 +28,11 @@
 根据这两个纬度绘制一个坐标轴并把事情填进去。
 
 实际效果比较理想，[prompt-result.md](/doc/prompt-result.md)但是可视化效果不太理想。所以增加针对这个可视化的一个优化工程，方便使用。
+
+## install & run & build
+
+```bash
+npm install
+npm run dev
+npm run build:win
+```
