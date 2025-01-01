@@ -1,6 +1,6 @@
 {
   "name": "tunan",
-  "version": "1.0.0",
+  "version": "0.1.0",
   "description": "TuNan - Vue 3 + Electron application",
   "main": "src/main/main.js",
   "scripts": {
@@ -11,10 +11,16 @@
     "build:mac": "npm run build && electron-builder --mac",
     "build:linux": "npm run build && electron-builder --linux"
   },
-  "keywords": ["vue", "electron", "desktop", "TuNan"],
+  "keywords": [
+    "vue",
+    "electron",
+    "desktop",
+    "TuNan"
+  ],
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "openai": "^4.77.0",
     "vue": "^3.3.10"
   },
   "devDependencies": {
@@ -37,14 +43,20 @@
     ],
     "mac": {
       "icon": "icon.png",
-      "target": ["dmg"]
+      "target": [
+        "dmg"
+      ]
     },
     "win": {
-      "target": ["nsis"],
+      "target": [
+        "nsis"
+      ],
       "icon": "icon.png"
     },
     "linux": {
-      "target": ["AppImage"],
+      "target": [
+        "AppImage"
+      ],
       "icon": "icon.png"
     }
   }
